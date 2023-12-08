@@ -13,7 +13,7 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { registerUser } from "@/store/reducer/user";
+import { registerUser, resetStatus } from "@/store/reducer/user";
 
 const { Title, Link, Text } = Typography;
 
@@ -32,7 +32,12 @@ function Registration() {
       api.success({
         message: 'New user created!',
         description: <div>Yay! Try <Link href="/login">log-in</Link> to the page.</div>,
+        onClose: () => {
+          dispatch(resetStatus())
+        }
       })
+
+      form.resetFields();
     }
   }, [status])
 
@@ -48,7 +53,6 @@ function Registration() {
   const handleSubmitRegistrationForm = React.useCallback(
     (data) => {
       dispatch(registerUser(data));
-      form.resetFields();
     },
     [dispatch, form, api]
   );
@@ -153,7 +157,7 @@ function Registration() {
                     className="lnf-create-account-btn"
                     type="secondary"
                     htmlType="submit"
-                    disabled={fetching}
+                    loading={fetching}
                   >
                     Create Account
                   </Button>
