@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id       Int       @id @default(autoincrement())
+  username      String    @unique
+  password      String
+  full_name     String
+  contact_info  String
+  user_type     String
+  email         String    @unique
+  status        String
+  avatar_url    String
+  date_created  DateTime
+  last_login    DateTime
+}
+
+model AdminUser {
+  admin_user_id Int      @id
+  user          User     @relation(fields: [admin_user_id], references: [user_id])
+  access_level  String
+  admin_id      String   @unique
+}
+
+model RegularUser {
+  regular_user_id       Int       @id
+  user                  User      @relation(fields: [regular_user_id], references: [user_id])
+  user_bio              String
+  items_claimed         Int
+  items_reports_count   Int
+  notification_setting  String
+  credential_name       String
+  credential_file_url   String
+}
+
+model Location {
+  location_id    Int      @id @default(autoincrement())
+  address        String
+  city_town      String
+  zipcode        String
+  country        String
+  date_created   DateTime
+  last_updated   DateTime
+}
+
+model ItemCategory {
+  category_id     Int      @id @default(autoincrement())
+  category_name   String
+  description     String
+  date_created    DateTime
+  last_updated    DateTime
+}
+
+model LostFoundItemReport {
+  item_id           Int       @id @default(autoincrement())
+  user_id           Int
+  title             String
+  item_type         String
+  item_description String
+  category_id       Int
+  date_lost_found   DateTime
+  location_id       Int
+  status            String
+  date_created      DateTime
+  last_updated      DateTime
+}
+
+model ItemDetail {
+  detail_id           Int      @id @default(autoincrement())
+  item_id             Int
+  primary_color       String?
+  secondary_color     String?
+  specific_description String?
+  specific_location   String?
+  brand               String?
+  model               String?
+  serial_number       String?
+}
+
+model Claim {
+  claim_id             Int       @id @default(autoincrement())
+  item_id              Int
+  claim_user_id        Int
+  non_registered_claim_name  String?
+  non_registered_claim_contact String?
+  non_registered_claim_email  String?
+  status               String
+  claim_description    String?
+  specific_item_info   String?
+  date_created         DateTime
+  last_updated         DateTime
+}
+
+model ItemPhoto {
+  photo_id      Int      @id @default(autoincrement())
+  claim_id      Int
+  item_id       Int
+  photo_url     String
+  file_name     String
+}
